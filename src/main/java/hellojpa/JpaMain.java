@@ -17,8 +17,10 @@ public class JpaMain {
 
             Member member1 = new Member();
             member1.setName("member1");
+            System.out.println("==============================");
             em.persist(member1);
-
+            System.out.println("member.id = " + member1.getId());
+            System.out.println("==============================");
             tx.commit();
         }catch (Exception e){
             tx.rollback();
