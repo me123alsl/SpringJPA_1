@@ -17,39 +17,38 @@ public class JpaMain {
         tx.begin();
         try {
 
-            Member member = new Member();
-            member.setUsername("hello");
 
-            em.persist(member);
+
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            member1.setTeam(team);
+            em.persist(member1);
+
 
             em.flush();
             em.clear();
 
-            Member refMember = em.getReference(Member.class, member.getId());
-            System.out.println("refMember.class = " + refMember.getClass()); // proxy
-//            refMember.getUsername(); // 실제 사용할 때 초기화
-            Hibernate.initialize(refMember); // 강제 초기화
-            System.out.println(emf.getPersistenceUnitUtil().isLoaded(refMember)); // false
+            Member m = em.find(Member.class, member1.getId());
+
+            System.out.println("m = " + m.getTeam().getClass());
+
+            System.out.println("======================");
+            System.out.println("m.getTeam().getName() :" + m.getTeam().getName());
+            System.out.println("======================");
 
             tx.commit();
         }catch (Exception e){
             tx.rollback();
+            e.printStackTrace();
         } finally {
             em.close();
         }
         emf.close();
 
-    }
-
-    private static void printMember(Member member) {
-        System.out.println("member = " + member.getUsername());
-    }
-
-    private static void printMemberAndTeam(Member member) {
-        String username = member.getUsername();
-        System.out.println("username = " + username);
-        Team team = member.getTeam();
-        System.out.println("team = " + team.getName());
     }
 
 }
