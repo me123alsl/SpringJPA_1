@@ -1,5 +1,7 @@
 package hellojpa;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -16,12 +18,18 @@ public class JpaMain {
         try {
 
             Member member = new Member();
-            member.setUsername("member1");
-            member.setCreatedBy("song");
-            member.setCreateDate(LocalDateTime.now());
+            member.setUsername("hello");
 
             em.persist(member);
 
+            em.flush();
+            em.clear();
+
+            Member refMember = em.getReference(Member.class, member.getId());
+            System.out.println("refMember.class = " + refMember.getClass()); // proxy
+//            refMember.getUsername(); // 실제 사용할 때 초기화
+            Hibernate.initialize(refMember); // 강제 초기화
+            System.out.println(emf.getPersistenceUnitUtil().isLoaded(refMember)); // false
 
             tx.commit();
         }catch (Exception e){
@@ -31,6 +39,17 @@ public class JpaMain {
         }
         emf.close();
 
+    }
+
+    private static void printMember(Member member) {
+        System.out.println("member = " + member.getUsername());
+    }
+
+    private static void printMemberAndTeam(Member member) {
+        String username = member.getUsername();
+        System.out.println("username = " + username);
+        Team team = member.getTeam();
+        System.out.println("team = " + team.getName());
     }
 
 }
