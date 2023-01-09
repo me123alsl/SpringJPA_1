@@ -13,21 +13,20 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String username;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn
-    private Team team;
 
-//    @OneToOne
-//    @JoinColumn(name = "LOCKER_ID")
-//    private Locker locker;
+    @Embedded
+    private Period period;
 
-    public String getUsername() {
-        return username;
-    }
+    @Embedded
+    private Address address;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "city", column = @Column(name = "WORK_CITY")),
+            @AttributeOverride(name = "street", column = @Column(name = "WORK_STREET")),
+            @AttributeOverride(name = "zipcode", column = @Column(name = "WORK_ZIPCODE"))
+    })
+    private Address workAddress;
 
     public Long getId() {
         return id;
@@ -37,14 +36,27 @@ public class Member extends BaseEntity {
         this.id = id;
     }
 
-    public Team getTeam() {
-        return team;
+    public String getUsername() {
+        return username;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
-        team.getMembers().add(this);
+    public void setUsername(String username) {
+        this.username = username;
     }
 
+    public Period getPeriod() {
+        return period;
+    }
 
+    public void setPeriod(Period period) {
+        this.period = period;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 }
