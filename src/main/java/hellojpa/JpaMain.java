@@ -16,15 +16,12 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
-           Member member = new Member();
-           member.setUsername("member1");
-              member.setAddress(new Address("city1", "street1", "10000"));
-                member.setPeriod(new Period());
-
-                em.persist(member);
-
+            Address address = new Address("city", "street", "10000");
+            Address copyAddress = new Address(address.getCity(), address.getStreet(), address.getZipcode());
+            System.out.println((address == copyAddress));
+            System.out.println((address.equals(copyAddress)));
             tx.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
         } finally {
